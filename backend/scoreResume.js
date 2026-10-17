@@ -1,4 +1,4 @@
-const MODEL = "gemini-2.0-flash";
+const MODEL = "gemini-2.5-flash";
 const GEMINI_API_URL =
   `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
@@ -96,7 +96,24 @@ export async function scoreResume(pdfBuffer, jobDescription) {
   });
 
   if (!response.ok) {
-    throw new Error(`Gemini request failed with HTTP ${response.status}.`);
+    let providerMessage = "";
+    try {
+      const errorBody = await response.text();
+      try {
+        const errorPayload = JSON.parse(errorBody);
+        providerMessage = errorPayload.error?.message || "";
+      } catch {
+        providerMessage = errorBody;
+      }
+    } catch {
+      providerMessage = "";
+    }
+
+    const safeProviderMessage = providerMessage
+      .replaceAll(apiKey, "[REDACTED]")
+      .slice(0, 500);
+    const details = safeProviderMessage ? `: ${safeProviderMessage}` : "";
+    throw new Error(`Gemini request failed with HTTP ${response.status}${details}.`);
   }
 
   const payload = await response.json();

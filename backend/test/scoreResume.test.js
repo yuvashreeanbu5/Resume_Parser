@@ -45,7 +45,7 @@ test("sends the PDF and job description to Gemini and validates its result", asy
     assert.deepEqual(result, validResult);
     assert.equal(
       requestUrl,
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
     );
     assert.equal(requestUrl.includes(apiKey), false);
     assert.equal(requestOptions.headers["x-goog-api-key"], apiKey);
@@ -105,7 +105,15 @@ test("turns Gemini HTTP errors into a key-free error", async () => {
   const originalApiKey = process.env.GEMINI_API_KEY;
   const apiKey = "test-only-gemini-key";
   process.env.GEMINI_API_KEY = apiKey;
-  globalThis.fetch = async () => ({ ok: false, status: 429 });
+  globalThis.fetch = async () => ({
+    ok: false,
+    status: 429,
+    async text() {
+      return JSON.stringify({
+        error: { message: `Request rejected for key ${apiKey}` },
+      });
+    },
+  });
 
   try {
     await assert.rejects(
@@ -113,6 +121,7 @@ test("turns Gemini HTTP errors into a key-free error", async () => {
       (error) => {
         assert.match(error.message, /HTTP 429/);
         assert.equal(error.message.includes(apiKey), false);
+        assert.match(error.message, /\[REDACTED\]/);
         return true;
       },
     );
