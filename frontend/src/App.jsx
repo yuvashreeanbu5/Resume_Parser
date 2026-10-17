@@ -392,20 +392,17 @@ function App() {
   return (
     <div className="page-shell">
       <header className="topbar">
-        <a className="brand" href="#" aria-label="Resume Parser home">
+        <a className="brand" href="#" aria-label="AI-Powered Resume Parser home">
           <span className="brand-mark">
             <BrandMark />
           </span>
-          <span className="brand-name">Resume Parser</span>
+          <span className="brand-name">AI-Powered Resume Parser</span>
         </a>
 
         <div className="topbar-note">
           <span className="status-dot" />
           A tiny tool for your next big move
         </div>
-        <span className="topbar-label">
-          <span aria-hidden="true">✳</span> AI Resume Scoring
-        </span>
       </header>
 
       <main>

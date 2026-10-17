@@ -95,24 +95,6 @@ a:focus-visible,
   background: #94b65b;
 }
 
-.topbar-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 11px;
-  border: 1px solid #e4e5d9;
-  border-radius: 999px;
-  color: #656b60;
-  background: #fbfbf8;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.topbar-label span {
-  color: #799744;
-  font-size: 14px;
-}
-
 .intro {
   display: flex;
   align-items: flex-end;
@@ -742,11 +724,6 @@ h1 span {
 
   .topbar {
     height: 70px;
-  }
-
-  .topbar-label {
-    padding: 7px 8px;
-    font-size: 10px;
   }
 
   h1 {
