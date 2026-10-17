@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
       content="A mock resume parser that scores your resume and highlights matching and missing skills."
     />
+    <meta name="theme-color" content="#f7f7f3" />
     <title>0 to shipped — Resume parser</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,180 +15,9 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="page-shell">
-      <header class="topbar">
-        <a class="brand" href="#" aria-label="0 to shipped home">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 36 36" fill="none">
-              <rect x="1" y="1" width="34" height="34" rx="11" fill="currentColor" />
-              <path d="M10 22.5 16 16l4 4 6-8" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M21.5 12h4.5v4.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </span>
-          <span class="brand-name">0 to shipped</span>
-        </a>
-
-        <div class="topbar-note">
-          <span class="status-dot"></span>
-          A tiny tool for your next big move
-        </div>
-        <span class="prototype-tag"><span aria-hidden="true">✳</span> Mock prototype</span>
-      </header>
-
-      <main>
-        <section class="intro" aria-labelledby="page-title">
-          <div class="intro-copy">
-            <p class="eyebrow"><span class="eyebrow-line"></span> YOUR CAREER, IN BETA</p>
-            <h1 id="page-title">A little more signal.<br /><span>A lot less guessing.</span></h1>
-            <p class="intro-description">
-              Drop in your resume. Get a quick read on your score, the skills you’ve got, and the ones to add.
-            </p>
-          </div>
-          <div class="step-note" aria-label="Three easy steps">
-            <span class="step-number">01</span>
-            <span class="step-divider"></span>
-            <span>Upload</span>
-            <span class="step-divider"></span>
-            <span>Get your readout</span>
-          </div>
-        </section>
-
-        <section class="workspace" aria-label="Resume parser">
-          <div class="upload-panel panel">
-            <div class="panel-heading">
-              <div>
-                <p class="section-kicker">THE STARTING LINE</p>
-                <h2>Bring your resume</h2>
-              </div>
-              <span class="step-pill">STEP 01 <span>OF 02</span></span>
-            </div>
-
-            <p class="panel-description">
-              We’ll take a look at your skills and give you a simple, no-drama score.
-            </p>
-
-            <label class="dropzone" id="dropzone" for="resume-file" tabindex="0">
-              <input id="resume-file" type="file" accept=".pdf,application/pdf" />
-              <span class="upload-icon" aria-hidden="true">
-                <svg viewBox="0 0 48 48" fill="none">
-                  <path d="M14 32.5h-1.5a8.5 8.5 0 0 1-.8-17 12.5 12.5 0 0 1 24.4 2.7 7.2 7.2 0 0 1-.6 14.3H34" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                  <path d="M24 34V21m0 0-5 5m5-5 5 5m-5 8v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-              <span class="dropzone-title" id="dropzone-title">Drop your PDF right here</span>
-              <span class="dropzone-subtitle" id="dropzone-subtitle">or <span>browse files</span> on your device</span>
-              <span class="file-limit">PDF only <span>·</span> Max 10 MB</span>
-            </label>
-
-            <p class="file-message" id="file-message" role="status" aria-live="polite"></p>
-
-            <div class="upload-footer">
-              <span class="privacy-note">
-                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
-                  <path d="M5.5 7V4.8a2.5 2.5 0 0 1 5 0V7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                </svg>
-                Stays on this device
-              </span>
-              <button class="analyze-button" id="analyze-button" type="button" disabled>
-                Score my resume
-                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </button>
-            </div>
-            <p class="mock-disclaimer">This is a visual demo — your results are sample data, not a real evaluation.</p>
-          </div>
-
-          <aside class="results-panel panel" aria-labelledby="results-heading" aria-live="polite">
-            <div class="results-topline">
-              <div>
-                <p class="section-kicker">YOUR QUICK READ</p>
-                <h2 id="results-heading">The good stuff</h2>
-              </div>
-              <span class="result-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                  <path d="m19 16 .9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16Z" fill="currentColor" />
-                </svg>
-              </span>
-            </div>
-
-            <div class="empty-state" id="empty-state">
-              <span class="empty-illustration" aria-hidden="true">
-                <svg viewBox="0 0 120 112" fill="none">
-                  <path d="M27 14.5A7.5 7.5 0 0 1 34.5 7h42L99 29.5v66a7.5 7.5 0 0 1-7.5 7.5h-57a7.5 7.5 0 0 1-7.5-7.5v-81Z" fill="#F3F1E9" stroke="#D9D7CC" stroke-width="1.5" />
-                  <path d="M76 7v17a5.5 5.5 0 0 0 5.5 5.5H99" stroke="#D9D7CC" stroke-width="1.5" />
-                  <path d="M43 48h39M43 59h27M43 70h19" stroke="#C8C6BB" stroke-width="2.5" stroke-linecap="round" />
-                  <circle cx="83" cy="78" r="20" fill="#D9F27E" stroke="white" stroke-width="4" />
-                  <path d="m75 78 5.5 5.5L92 71" stroke="#22352A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="m25 34-2.5 5L17 41l5.5 2 2.5 5 2-5 5-2-5-2-2-5Z" fill="#A8BF69" />
-                </svg>
-              </span>
-              <h3>Your readout starts here</h3>
-              <p>Upload a resume and your score, matching skills, and next-step skills will show up here.</p>
-            </div>
-
-            <div class="score-content" id="score-content" hidden>
-              <div class="resume-label">
-                <span class="pdf-icon">PDF</span>
-                <span class="resume-filename" id="resume-filename"></span>
-                <span class="sample-label">SAMPLE</span>
-              </div>
-              <div class="score-summary">
-                <div class="score-ring" aria-label="Resume score: 82 out of 100">
-                  <svg viewBox="0 0 120 120" aria-hidden="true">
-                    <circle class="score-track" cx="60" cy="60" r="50" />
-                    <circle class="score-progress" cx="60" cy="60" r="50" />
-                  </svg>
-                  <div class="score-number"><strong>82</strong><span>out of 100</span></div>
-                </div>
-                <div class="score-copy">
-                  <span class="score-badge"><span></span> STRONG START</span>
-                  <h3>Looking good!</h3>
-                  <p>Your resume lines up with a lot of the skills for this role.</p>
-                </div>
-              </div>
-              <div class="score-divider"></div>
-              <div class="skill-section">
-                <div class="skill-heading">
-                  <h3>Skills you have</h3>
-                  <span class="skill-count present-count">05 FOUND</span>
-                </div>
-                <div class="skill-list">
-                  <span class="skill-chip present"><span>✓</span> JavaScript</span>
-                  <span class="skill-chip present"><span>✓</span> React</span>
-                  <span class="skill-chip present"><span>✓</span> HTML &amp; CSS</span>
-                  <span class="skill-chip present"><span>✓</span> Git</span>
-                  <span class="skill-chip present"><span>✓</span> Communication</span>
-                </div>
-              </div>
-              <div class="skill-section missing-section">
-                <div class="skill-heading">
-                  <h3>Skills to build</h3>
-                  <span class="skill-count missing-count">03 TO EXPLORE</span>
-                </div>
-                <div class="skill-list">
-                  <span class="skill-chip missing"><span>+</span> TypeScript</span>
-                  <span class="skill-chip missing"><span>+</span> Testing</span>
-                  <span class="skill-chip missing"><span>+</span> Accessibility</span>
-                </div>
-              </div>
-              <p class="result-footnote">A little direction, not the whole story. Keep going.</p>
-            </div>
-          </aside>
-        </section>
-
-        <footer class="page-footer">
-          <span>MADE FOR THE NEXT VERSION OF YOU</span>
-          <span class="footer-spark" aria-hidden="true">✳</span>
-          <span>One step closer to shipped.</span>
-        </footer>
-      </main>
-    </div>
-    <script src="script.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
