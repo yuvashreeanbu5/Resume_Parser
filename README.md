@@ -20,13 +20,24 @@ Run the backend validation tests with `npm test` from `backend/`. Create a produ
 
 The API currently has no authentication or retention controls and binds to `127.0.0.1` by default. Before deploying it publicly or using real resumes, add access control and define a data-retention policy.
 
-## Deploy as two Vercel projects
+## Backend structure
 
-Create two Vercel projects from this repository:
+- `backend/server.js` configures Express and starts the local server.
+- `backend/routers/` maps API paths to controllers.
+- `backend/controllers/` handles HTTP requests and responses.
+- `backend/services/` contains database and resume-storage operations.
+- `backend/config/` loads environment configuration and connects to MongoDB.
+- `backend/middleware/` contains upload, not-found, and error-handling middleware.
+- `backend/models/` contains Mongoose models.
+- `backend/utils.js` contains shared upload validation and utility functions.
+- `backend/api/` exposes the Express app through a Vercel serverless function.
 
-1. **Frontend project:** set the Root Directory to `frontend`. The included `frontend/vercel.json` configures the Vite build and SPA fallback. Add the `VITE_API_URL` environment variable with the backend project's public origin, for example `https://your-backend.vercel.app` (no trailing slash), then redeploy.
-2. **Backend project:** set the Root Directory to `backend`. The included `backend/vercel.json` configures the serverless API function. Add `MONGODB_URI` with your MongoDB connection string and `FRONTEND_ORIGIN` with the frontend project's public origin. Multiple allowed frontend origins can be comma-separated.
+## Deploy as a Vercel project with services
 
-Set the MongoDB provider's network access rules to allow connections from your deployed backend. Do not put database credentials or other secrets in frontend environment variables; `VITE_*` values are included in the browser bundle.
+The root `vercel.json` defines one Vercel project containing two services: `backend` (Express) and `frontend` (Vite). The `/api/*` rewrite routes to the backend, and all remaining paths route to the frontend. The browser calls the backend at the same-origin `/api` path, so no service binding is required.
+
+Import the repository as a single Vercel project with the repository root as its Root Directory. Set `MONGODB_URI` for the backend service in Vercel's environment variables. The frontend does not need `VITE_API_URL`; it uses the same-origin `/api` rewrite.
+
+Set the MongoDB provider's network access rules to allow connections from your deployment. Do not put database credentials or other secrets in frontend environment variables; `VITE_*` values are included in the browser bundle.
 
 Vercel Functions currently limit request bodies to 4.5 MB. The app accepts PDFs up to 10 MB locally, so larger uploads may be rejected by the Vercel API. Supporting larger PDFs in production requires uploading directly to object storage (for example, with signed uploads) rather than sending the file through a function.

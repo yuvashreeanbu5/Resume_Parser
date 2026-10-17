@@ -1,5 +1,5 @@
-import { connectToDatabase } from "../src/database.js";
-import app from "../src/server.js";
+import { connectToDatabase } from "../config/database.js";
+import app from "../server.js";
 
 export default async function handler(request, response) {
   try {

@@ -4,8 +4,9 @@ import {
   MAX_JOB_DESCRIPTION_LENGTH,
   MAX_RESUME_SIZE,
   RequestValidationError,
+  sanitizeResumeFilename,
   validateAnalysisSubmission,
-} from "../src/analysisValidation.js";
+} from "../utils.js";
 
 const validFile = {
   originalname: "resume.pdf",
@@ -16,6 +17,11 @@ const validFile = {
 
 test("accepts a PDF and trims the job description", () => {
   assert.equal(validateAnalysisSubmission(validFile, "  Engineer role  "), "Engineer role");
+});
+
+test("sanitizes unsafe characters in an uploaded resume filename", () => {
+  assert.equal(sanitizeResumeFilename("../résumé.pdf"), ".._r_sum_.pdf");
+  assert.equal(sanitizeResumeFilename(""), "resume.pdf");
 });
 
 test("requires a resume", () => {

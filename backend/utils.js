@@ -42,3 +42,7 @@ export function validateAnalysisSubmission(file, jobDescription) {
 
   return normalizedJobDescription;
 }
+
+export function sanitizeResumeFilename(filename) {
+  return filename.replace(/[^\w.\-() ]/g, "_").slice(0, 200) || "resume.pdf";
+}

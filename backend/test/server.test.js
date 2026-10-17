@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { once } from "node:events";
 import test from "node:test";
-import app from "../src/server.js";
+import app from "../server.js";
 
 async function listenForTest(t) {
   const server = app.listen(0);

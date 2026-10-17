@@ -10,7 +10,9 @@ export function connectToDatabase() {
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri) {
     return Promise.reject(
-      new Error("MONGODB_URI is required. Configure it in backend/.env or Vercel environment variables."),
+      new Error(
+        "MONGODB_URI is required. Configure it in backend/.env or Vercel environment variables.",
+      ),
     );
   }
 
