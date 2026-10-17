@@ -12,8 +12,12 @@ export async function createAnalysis(request, response, next) {
     try {
       scoringResult = await scoreResume(request.file.buffer, analysis.jobDescription);
     } catch (scoringError) {
+      const errorMessage =
+        scoringError instanceof Error ? scoringError.message : String(scoringError);
+      const apiKey = process.env.GEMINI_API_KEY;
+      const safeErrorMessage = apiKey ? errorMessage.replaceAll(apiKey, "[REDACTED]") : errorMessage;
       console.error(
-        `Resume scoring failed for submission ${analysis.id} (${scoringError.name || "Error"}).`,
+        `Resume scoring failed for submission ${analysis.id} (${scoringError.name || "Error"}): ${safeErrorMessage}`,
       );
       analysis.status = "failed";
       analysis.scoringMessage =
