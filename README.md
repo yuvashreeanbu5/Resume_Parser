@@ -18,7 +18,7 @@ The frontend proxies `/api` requests to the backend on port 5000. The API health
 
 Run the backend validation tests with `npm test` from `backend/`. Create a production frontend build with `npm run build` from `frontend/`.
 
-The API currently has no authentication or retention controls and binds to `127.0.0.1` by default. Before deploying it publicly or using real resumes, add access control and define a data-retention policy.
+The API currently has no authentication or retention controls and binds to `127.0.0.1` by default when run locally. Before deploying it publicly or using real resumes, add access control and define a data-retention policy.
 
 ## Backend structure
 
@@ -27,7 +27,7 @@ The API currently has no authentication or retention controls and binds to `127.
 - `backend/controllers/` handles HTTP requests and responses.
 - `backend/services/` contains database and resume-storage operations.
 - `backend/config/` loads environment configuration and connects to MongoDB.
-- `backend/middleware/` contains upload, not-found, and error-handling middleware.
+- `backend/middleware/` contains database-connection, upload, not-found, and error-handling middleware.
 - `backend/models/` contains Mongoose models.
 - `backend/utils.js` contains shared upload validation and utility functions.
 - `backend/api/` exposes the Express app through a Vercel serverless function.

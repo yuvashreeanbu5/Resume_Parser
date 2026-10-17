@@ -3,10 +3,9 @@ import { pipeline } from "node:stream/promises";
 import { GridFSBucket } from "mongodb";
 import mongoose from "mongoose";
 import Analysis from "../models/Analysis.js";
-import { validateAnalysisSubmission, sanitizeResumeFilename } from "../utils.js";
+import { sanitizeResumeFilename } from "../utils.js";
 
-export async function createAnalysisSubmission(file, rawJobDescription) {
-  const jobDescription = validateAnalysisSubmission(file, rawJobDescription);
+export async function createAnalysisSubmission(file, jobDescription) {
   const database = mongoose.connection.db;
   if (!database) {
     throw new Error("MongoDB is not connected.");

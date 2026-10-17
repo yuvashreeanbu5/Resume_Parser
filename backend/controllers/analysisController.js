@@ -4,7 +4,7 @@ export async function createAnalysis(request, response, next) {
   try {
     const analysis = await createAnalysisSubmission(
       request.file,
-      request.body.jobDescription,
+      request.jobDescription,
     );
 
     response.status(201).json({
