@@ -9,6 +9,7 @@ import { GridFSBucket } from "mongodb";
 import mongoose from "mongoose";
 import multer from "multer";
 import Analysis from "./models/Analysis.js";
+import { connectToDatabase } from "./database.js";
 import {
   MAX_RESUME_SIZE,
   RequestValidationError,
@@ -19,6 +20,10 @@ const currentDirectory = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: resolve(currentDirectory, "../.env") });
 
 const app = express();
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
@@ -31,7 +36,9 @@ const upload = multer({
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
+    origin: (origin, callback) => {
+      callback(null, !origin || allowedOrigins.includes(origin));
+    },
   }),
 );
 
@@ -138,7 +145,7 @@ export async function startServer() {
   }
   const host = process.env.HOST || "127.0.0.1";
 
-  await mongoose.connect(mongoUri);
+  await connectToDatabase();
   const server = await new Promise((resolve, reject) => {
     const listener = app.listen(port, host, () => resolve(listener));
     listener.once("error", reject);

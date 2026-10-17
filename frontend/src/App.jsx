@@ -308,11 +308,17 @@ function App() {
   const [submission, setSubmission] = useState(null);
 
   async function handleAnalyze(file, jobDescription) {
+    const configuredApiUrl = import.meta.env.VITE_API_URL;
+    if (import.meta.env.PROD && !configuredApiUrl) {
+      throw new Error("Set VITE_API_URL to the deployed backend URL in the Vercel project settings.");
+    }
+
     const formData = new FormData();
     formData.append("resume", file);
     formData.append("jobDescription", jobDescription);
 
-    const response = await fetch("/api/analyses", {
+    const apiBaseUrl = (configuredApiUrl || "").replace(/\/+$/, "");
+    const response = await fetch(`${apiBaseUrl}/api/analyses`, {
       method: "POST",
       body: formData,
     });
