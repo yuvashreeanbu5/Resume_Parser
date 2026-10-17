@@ -1,9 +1,6 @@
 import { useRef, useState } from "react";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const presentSkills = ["JavaScript", "React", "HTML & CSS", "Git", "Communication"];
-const missingSkills = ["TypeScript", "Testing", "Accessibility"];
-
 function BrandMark() {
   return (
     <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
@@ -75,16 +72,12 @@ function EmptyIllustration() {
   );
 }
 
-function PrivacyIcon() {
+function StorageIcon() {
   return (
     <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3" />
-      <path
-        d="M5.5 7V4.8a2.5 2.5 0 0 1 5 0V7"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinecap="round"
-      />
+      <ellipse cx="8" cy="4" rx="5" ry="2" stroke="currentColor" strokeWidth="1.3" />
+      <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4" stroke="currentColor" strokeWidth="1.3" />
+      <path d="M3 8c0 1.1 2.2 2 5 2s5-.9 5-2" stroke="currentColor" strokeWidth="1.3" />
     </svg>
   );
 }
@@ -120,68 +113,24 @@ function ArrowIcon() {
   );
 }
 
-function ScoreResults({ filename }) {
+function SubmissionStatus({ filename, submissionId }) {
   return (
-    <div className="score-content">
+    <div className="submission-content">
       <div className="resume-label">
         <span className="pdf-icon">PDF</span>
         <span className="resume-filename">{filename}</span>
-        <span className="sample-label">SAMPLE</span>
       </div>
-      <div className="score-summary">
-        <div className="score-ring" aria-label="Resume score: 82 out of 100">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <circle className="score-track" cx="60" cy="60" r="50" />
-            <circle className="score-progress" cx="60" cy="60" r="50" />
-          </svg>
-          <div className="score-number">
-            <strong>82</strong>
-            <span>out of 100</span>
-          </div>
-        </div>
-        <div className="score-copy">
-          <span className="score-badge">
-            <span />
-            STRONG START
-          </span>
-          <h3>Looking good!</h3>
-          <p>Your resume lines up with a lot of the skills for this role.</p>
-        </div>
+      <div className="submission-status">
+        <span className="submission-status-icon" aria-hidden="true">✓</span>
+        <h3>Resume and job description saved</h3>
+        <p>
+          Your submission is stored and ready for comparison. AI scoring will be added later; no
+          score or skill matches are available yet.
+        </p>
       </div>
-      <div className="score-divider" />
-      <SkillSection
-        title="Skills you have"
-        count={`${String(presentSkills.length).padStart(2, "0")} FOUND`}
-        skills={presentSkills}
-        kind="present"
-      />
-      <SkillSection
-        title="Skills to build"
-        count={`${String(missingSkills.length).padStart(2, "0")} TO EXPLORE`}
-        skills={missingSkills}
-        kind="missing"
-      />
-      <p className="result-footnote">A little direction, not the whole story. Keep going.</p>
-    </div>
-  );
-}
-
-function SkillSection({ title, count, skills, kind }) {
-  const marker = kind === "present" ? "✓" : "+";
-
-  return (
-    <div className={`skill-section ${kind === "missing" ? "missing-section" : ""}`}>
-      <div className="skill-heading">
-        <h3>{title}</h3>
-        <span className={`skill-count ${kind}-count`}>{count}</span>
-      </div>
-      <div className="skill-list">
-        {skills.map((skill) => (
-          <span className={`skill-chip ${kind}`} key={skill}>
-            <span>{marker}</span>
-            {skill}
-          </span>
-        ))}
+      <div className="submission-id">
+        <span>SUBMISSION ID</span>
+        <code>{submissionId}</code>
       </div>
     </div>
   );
@@ -191,9 +140,11 @@ function UploadPanel({ onAnalyze }) {
   const fileInputRef = useRef(null);
   const dragDepthRef = useRef(0);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [jobDescription, setJobDescription] = useState("");
   const [fileMessage, setFileMessage] = useState("");
   const [fileError, setFileError] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function processFile(file) {
     if (!file) return;
@@ -226,6 +177,22 @@ function UploadPanel({ onAnalyze }) {
     dragDepthRef.current = 0;
     setIsDragging(false);
     processFile(event.dataTransfer.files?.[0]);
+  }
+
+  async function handleSubmit() {
+    if (!selectedFile || !jobDescription.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setFileError(false);
+    try {
+      await onAnalyze(selectedFile, jobDescription.trim());
+      setFileMessage("Submission saved. AI scoring is not connected yet.");
+    } catch (error) {
+      setFileError(true);
+      setFileMessage(error instanceof Error ? error.message : "Unable to save your submission.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -297,43 +264,69 @@ function UploadPanel({ onAnalyze }) {
         </span>
       </label>
 
+      <label className="job-description-label" htmlFor="job-description">
+        Job description
+        <span>Paste the role description you want to compare against.</span>
+      </label>
+      <textarea
+        id="job-description"
+        className="job-description-input"
+        value={jobDescription}
+        onChange={(event) => setJobDescription(event.target.value)}
+        maxLength={50000}
+        placeholder="Paste the job description here..."
+        rows={4}
+      />
+
       <p className={`file-message${fileError ? " is-error" : ""}`} role="status" aria-live="polite">
         {fileMessage}
       </p>
 
       <div className="upload-footer">
         <span className="privacy-note">
-          <PrivacyIcon />
-          Stays on this device
+          <StorageIcon />
+          Sent to server for storage
         </span>
         <button
           className="analyze-button"
           type="button"
-          disabled={!selectedFile}
-          onClick={() => {
-            onAnalyze(selectedFile);
-            setFileMessage("Sample results are ready.");
-          }}
+          disabled={!selectedFile || !jobDescription.trim() || isSubmitting}
+          onClick={handleSubmit}
         >
-          Score my resume
+          {isSubmitting ? "Submitting..." : "Save for comparison"}
           <ArrowIcon />
         </button>
       </div>
       <p className="mock-disclaimer">
-        This is a visual demo — your results are sample data, not a real evaluation.
+        Your PDF and job description are saved to MongoDB. AI comparison will be added later.
       </p>
     </div>
   );
 }
 
 function App() {
-  const [resultFilename, setResultFilename] = useState("");
-  const [hasResults, setHasResults] = useState(false);
+  const [submission, setSubmission] = useState(null);
 
-  function handleAnalyze(file) {
-    if (!file) return;
-    setResultFilename(file.name);
-    setHasResults(true);
+  async function handleAnalyze(file, jobDescription) {
+    const formData = new FormData();
+    formData.append("resume", file);
+    formData.append("jobDescription", jobDescription);
+
+    const response = await fetch("/api/analyses", {
+      method: "POST",
+      body: formData,
+    });
+    const isJson = response.headers.get("content-type")?.includes("application/json");
+    const result = isJson ? await response.json() : null;
+
+    if (!response.ok) {
+      throw new Error(result?.message || "Unable to save your submission. Please try again.");
+    }
+
+    setSubmission({
+      filename: result.resume.filename,
+      id: result.analysisId,
+    });
   }
 
   return (
@@ -368,16 +361,15 @@ function App() {
               <span>A lot less guessing.</span>
             </h1>
             <p className="intro-description">
-              Drop in your resume. Get a quick read on your score, the skills you’ve got, and the
-              ones to add.
+              Submit your resume and a job description to prepare them for comparison.
             </p>
           </div>
-          <div className="step-note" aria-label="Three easy steps">
+          <div className="step-note" aria-label="Two steps">
             <span className="step-number">01</span>
             <span className="step-divider" />
-            <span>Upload</span>
+            <span>Resume PDF</span>
             <span className="step-divider" />
-            <span>Get your readout</span>
+            <span>Job description</span>
           </div>
         </section>
 
@@ -387,25 +379,25 @@ function App() {
           <aside className="results-panel panel" aria-labelledby="results-heading" aria-live="polite">
             <div className="results-topline">
               <div>
-                <p className="section-kicker">YOUR QUICK READ</p>
-                <h2 id="results-heading">The good stuff</h2>
+                <p className="section-kicker">YOUR SUBMISSION</p>
+                <h2 id="results-heading">{submission ? "Submission saved" : "Get started"}</h2>
               </div>
               <span className="result-icon">
                 <ResultsIcon />
               </span>
             </div>
 
-            {hasResults ? (
-              <ScoreResults filename={resultFilename} />
+            {submission ? (
+              <SubmissionStatus filename={submission.filename} submissionId={submission.id} />
             ) : (
               <div className="empty-state">
                 <span className="empty-illustration">
                   <EmptyIllustration />
                 </span>
-                <h3>Your readout starts here</h3>
+                <h3>Your comparison starts here</h3>
                 <p>
-                  Upload a resume and your score, matching skills, and next-step skills will show
-                  up here.
+                  Submit a resume PDF and job description. They’ll be saved for AI comparison when
+                  that feature is added.
                 </p>
               </div>
             )}
