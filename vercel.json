@@ -10,6 +10,11 @@
       "framework": "vite"
     }
   },
+  "functions": {
+    "backend/api/[...path].js": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",

@@ -392,19 +392,19 @@ function App() {
   return (
     <div className="page-shell">
       <header className="topbar">
-        <a className="brand" href="#" aria-label="0 to shipped home">
+        <a className="brand" href="#" aria-label="Resume Parser home">
           <span className="brand-mark">
             <BrandMark />
           </span>
-          <span className="brand-name">0 to shipped</span>
+          <span className="brand-name">Resume Parser</span>
         </a>
 
         <div className="topbar-note">
           <span className="status-dot" />
           A tiny tool for your next big move
         </div>
-        <span className="prototype-tag">
-          <span aria-hidden="true">✳</span> Mock prototype
+        <span className="topbar-label">
+          <span aria-hidden="true">✳</span> AI Resume Scoring
         </span>
       </header>
 
@@ -413,12 +413,10 @@ function App() {
           <div className="intro-copy">
             <p className="eyebrow">
               <span className="eyebrow-line" />
-              YOUR CAREER, IN BETA
+              AI RESUME SCORING
             </p>
             <h1 id="page-title">
-              A little more signal.
-              <br />
-              <span>A lot less guessing.</span>
+              Resume Parser
             </h1>
             <p className="intro-description">
               Submit your resume and a job description to prepare them for comparison.

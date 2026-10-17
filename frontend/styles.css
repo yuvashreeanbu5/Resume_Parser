@@ -95,7 +95,7 @@ a:focus-visible,
   background: #94b65b;
 }
 
-.prototype-tag {
+.topbar-label {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -108,7 +108,7 @@ a:focus-visible,
   font-weight: 600;
 }
 
-.prototype-tag span {
+.topbar-label span {
   color: #799744;
   font-size: 14px;
 }
@@ -744,7 +744,7 @@ h1 span {
     height: 70px;
   }
 
-  .prototype-tag {
+  .topbar-label {
     padding: 7px 8px;
     font-size: 10px;
   }
