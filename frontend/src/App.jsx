@@ -464,7 +464,7 @@ function App() {
           <span className="footer-spark" aria-hidden="true">
             ✳
           </span>
-          <span>One step closer to shipped.</span>
+          <span>One step closer to your next opportunity.</span>
         </footer>
       </main>
     </div>
