@@ -45,7 +45,7 @@ test("sends the PDF and job description to Gemini and validates its result", asy
     assert.deepEqual(result, validResult);
     assert.equal(
       requestUrl,
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
     );
     assert.equal(requestUrl.includes(apiKey), false);
     assert.equal(requestOptions.headers["x-goog-api-key"], apiKey);
