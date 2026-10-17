@@ -43,6 +43,10 @@ test("sends the PDF and job description to Gemini and validates its result", asy
     const result = await scoreResume(Buffer.from("%PDF-test"), "React engineer");
 
     assert.deepEqual(result, validResult);
+    assert.equal(
+      requestUrl,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+    );
     assert.equal(requestUrl.includes(apiKey), false);
     assert.equal(requestOptions.headers["x-goog-api-key"], apiKey);
     const requestBody = JSON.parse(requestOptions.body);
