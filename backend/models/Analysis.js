@@ -27,9 +27,30 @@ const analysisSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending"],
+      enum: ["pending", "completed", "failed"],
       default: "pending",
       required: true,
+    },
+    score: {
+      type: Number,
+      min: 0,
+      max: 100,
+    },
+    matchedSkills: {
+      type: [String],
+      default: undefined,
+    },
+    missingSkills: {
+      type: [String],
+      default: undefined,
+    },
+    summary: {
+      type: String,
+      trim: true,
+    },
+    scoringMessage: {
+      type: String,
+      trim: true,
     },
   },
   { timestamps: true },

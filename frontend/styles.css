@@ -537,7 +537,7 @@ h1 span {
   white-space: nowrap;
 }
 
-.submission-status {
+.scoring-state {
   min-height: 278px;
   display: flex;
   flex-direction: column;
@@ -547,33 +547,107 @@ h1 span {
   text-align: center;
 }
 
-.submission-status-icon {
+.scoring-spinner {
   width: 40px;
   height: 40px;
-  display: grid;
-  place-items: center;
   margin-bottom: 14px;
-  border: 1px solid #e6ebdc;
+  border: 3px solid #e6ebdc;
+  border-top-color: #829b5c;
   border-radius: 50%;
-  color: #68824a;
-  background: #f2f6e8;
-  font-size: 17px;
-  font-weight: 700;
+  animation: scoring-spin 800ms linear infinite;
 }
 
-.submission-status h3 {
+.scoring-state h3,
+.result-summary h3,
+.result-skills h3 {
   margin-bottom: 8px;
   font-family: Manrope, sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: -0.35px;
 }
 
-.submission-status p {
+.scoring-state p,
+.result-summary p,
+.no-skills {
   max-width: 290px;
   margin-bottom: 0;
   color: #888d82;
   font-size: 11px;
   line-height: 1.65;
+}
+
+.scoring-error {
+  color: #a4443e;
+}
+
+.scoring-results {
+  display: grid;
+  gap: 16px;
+}
+
+.score-result {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  color: #315c3f;
+}
+
+.score-result strong {
+  font-family: Manrope, sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+.score-result span {
+  color: #85897f;
+  font-size: 12px;
+}
+
+.result-summary,
+.result-skills {
+  padding-top: 13px;
+  border-top: 1px solid #eeeeea;
+}
+
+.result-summary h3,
+.result-skills h3 {
+  margin-bottom: 7px;
+}
+
+.result-skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result-skill-list li {
+  padding: 6px 8px;
+  border: 1px solid #e6ebdc;
+  border-radius: 5px;
+  color: #526447;
+  background: #f7f9f2;
+  font-size: 10px;
+}
+
+.result-skill-list.missing li {
+  border-color: #eee9df;
+  color: #817565;
+  background: #fbf9f5;
+}
+
+.no-skills {
+  font-size: 10px;
+}
+
+@keyframes scoring-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .submission-id {
@@ -606,6 +680,12 @@ h1 span {
   color: #a0a399;
   font-size: 9px;
   letter-spacing: 0.25px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scoring-spinner {
+    animation-duration: 2s;
+  }
 }
 
 .page-footer span:first-child {

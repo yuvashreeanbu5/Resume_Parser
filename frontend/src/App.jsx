@@ -113,26 +113,60 @@ function ArrowIcon() {
   );
 }
 
-function SubmissionStatus({ filename, submissionId }) {
+function SubmissionStatus({ submission }) {
   return (
     <div className="submission-content">
       <div className="resume-label">
         <span className="pdf-icon">PDF</span>
-        <span className="resume-filename">{filename}</span>
+        <span className="resume-filename">{submission.filename}</span>
       </div>
-      <div className="submission-status">
-        <span className="submission-status-icon" aria-hidden="true">✓</span>
-        <h3>Resume and job description saved</h3>
-        <p>
-          Your submission is stored and ready for comparison. AI scoring will be added later; no
-          score or skill matches are available yet.
-        </p>
-      </div>
-      <div className="submission-id">
-        <span>SUBMISSION ID</span>
-        <code>{submissionId}</code>
-      </div>
+      {submission.status === "scoring" ? (
+        <div className="scoring-state" role="status" aria-live="polite" aria-busy="true">
+          <span className="scoring-spinner" aria-hidden="true" />
+          <h3>Scoring...</h3>
+          <p>Comparing your resume with the job description.</p>
+        </div>
+      ) : submission.status === "completed" ? (
+        <div className="scoring-results">
+          <div className="score-result">
+            <strong>{submission.score}</strong>
+            <span>/ 100</span>
+          </div>
+          <section className="result-summary">
+            <h3>Summary</h3>
+            <p>{submission.summary}</p>
+          </section>
+          <SkillList title="Matched skills" skills={submission.matchedSkills} kind="matched" />
+          <SkillList title="Missing skills" skills={submission.missingSkills} kind="missing" />
+        </div>
+      ) : (
+        <div className="scoring-state scoring-error" role="status">
+          <h3>Resume saved; scoring unavailable</h3>
+          <p>{submission.message}</p>
+        </div>
+      )}
+      {submission.id && submission.id !== "pending" && submission.id !== "unavailable" && (
+        <div className="submission-id">
+          <span>SUBMISSION ID</span>
+          <code>{submission.id}</code>
+        </div>
+      )}
     </div>
+  );
+}
+
+function SkillList({ title, skills, kind }) {
+  return (
+    <section className="result-skills">
+      <h3>{title}</h3>
+      {skills.length > 0 ? (
+        <ul className={`result-skill-list ${kind}`}>
+          {skills.map((skill) => <li key={skill}>{skill}</li>)}
+        </ul>
+      ) : (
+        <p className="no-skills">None identified.</p>
+      )}
+    </section>
   );
 }
 
@@ -186,7 +220,7 @@ function UploadPanel({ onAnalyze }) {
     setFileError(false);
     try {
       await onAnalyze(selectedFile, jobDescription.trim());
-      setFileMessage("Submission saved. AI scoring is not connected yet.");
+      setFileMessage("Resume and job description processed.");
     } catch (error) {
       setFileError(true);
       setFileMessage(error instanceof Error ? error.message : "Unable to save your submission.");
@@ -323,10 +357,36 @@ function App() {
       throw new Error(result?.message || "Unable to save your submission. Please try again.");
     }
 
+    if (!result?.analysisId || !result.resume?.filename) {
+      throw new Error("The server returned an incomplete scoring result.");
+    }
+
     setSubmission({
       filename: result.resume.filename,
       id: result.analysisId,
+      status: result.status,
+      score: result.score,
+      matchedSkills: result.matchedSkills,
+      missingSkills: result.missingSkills,
+      summary: result.summary,
+      message: result.message,
     });
+  }
+
+  async function submitForScoring(file, jobDescription) {
+    setSubmission({ filename: file.name, status: "scoring", id: "pending" });
+    try {
+      await handleAnalyze(file, jobDescription);
+    } catch (error) {
+      setSubmission({
+        filename: file.name,
+        status: "failed",
+        id: "unavailable",
+        message:
+          "We could not confirm the submission status. Please check your connection and try again.",
+      });
+      throw error;
+    }
   }
 
   return (
@@ -374,7 +434,7 @@ function App() {
         </section>
 
         <section className="workspace" aria-label="Resume parser">
-          <UploadPanel onAnalyze={handleAnalyze} />
+          <UploadPanel onAnalyze={submitForScoring} />
 
           <aside className="results-panel panel" aria-labelledby="results-heading" aria-live="polite">
             <div className="results-topline">
@@ -388,7 +448,7 @@ function App() {
             </div>
 
             {submission ? (
-              <SubmissionStatus filename={submission.filename} submissionId={submission.id} />
+              <SubmissionStatus submission={submission} />
             ) : (
               <div className="empty-state">
                 <span className="empty-illustration">

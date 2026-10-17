@@ -1,6 +1,6 @@
 # 0 to shipped resume evaluator
 
-The repository contains a React/Vite frontend and an Express/MongoDB backend. The backend stores uploaded PDF files in MongoDB GridFS and saves the associated job description as a pending analysis. Resume-versus-job-description AI comparison, scoring, and skill extraction are not implemented yet. After saving an upload, the frontend confirms the submission without showing fabricated results.
+The repository contains a React/Vite frontend and an Express/MongoDB backend. The backend stores uploaded PDF files in MongoDB GridFS, saves the associated job description, and uses Gemini to score the resume against the job description and identify matched and missing skills. Configure `GEMINI_API_KEY` in the backend environment; never expose it in the frontend.
 
 ## Requirements
 
@@ -9,7 +9,7 @@ The repository contains a React/Vite frontend and an Express/MongoDB backend. Th
 
 ## Configure and run
 
-1. Create `backend/.env` with `MONGODB_URI` set to your MongoDB connection string.
+1. Create `backend/.env` with `MONGODB_URI` and `GEMINI_API_KEY` set to your MongoDB connection string and Gemini API key.
 2. In `backend/`, run `npm install`, then `npm run dev`.
 3. In `frontend/`, run `npm install`, then `npm run dev`.
 4. Open the Vite URL shown in the frontend terminal (normally `http://localhost:5173`).
@@ -25,18 +25,19 @@ The API currently has no authentication or retention controls and binds to `127.
 - `backend/server.js` configures Express and starts the local server.
 - `backend/routers/` maps API paths to controllers.
 - `backend/controllers/` handles HTTP requests and responses.
-- `backend/services/` contains database and resume-storage operations.
+- `backend/services/` contains submission persistence operations.
 - `backend/config/` loads environment configuration and connects to MongoDB.
 - `backend/middleware/` contains database-connection, upload, not-found, and error-handling middleware.
 - `backend/models/` contains Mongoose models.
 - `backend/utils.js` contains shared upload validation and utility functions.
+- `backend/scoreResume.js` calls Gemini and validates the structured scoring result.
 - `backend/api/` exposes the Express app through a Vercel serverless function.
 
 ## Deploy as a Vercel project with services
 
 The root `vercel.json` defines one Vercel project containing two services: `backend` (Express) and `frontend` (Vite). The `/api/*` rewrite routes to the backend, and all remaining paths route to the frontend. The browser calls the backend at the same-origin `/api` path, so no service binding is required.
 
-Import the repository as a single Vercel project with the repository root as its Root Directory. Set `MONGODB_URI` for the backend service in Vercel's environment variables. The frontend does not need `VITE_API_URL`; it uses the same-origin `/api` rewrite.
+Import the repository as a single Vercel project with the repository root as its Root Directory. Set `MONGODB_URI` and `GEMINI_API_KEY` for the backend service in Vercel's environment variables. The frontend does not need `VITE_API_URL`; it uses the same-origin `/api` rewrite. Keep the Gemini key server-side; never prefix it with `VITE_`.
 
 Set the MongoDB provider's network access rules to allow connections from your deployment. Do not put database credentials or other secrets in frontend environment variables; `VITE_*` values are included in the browser bundle.
 
